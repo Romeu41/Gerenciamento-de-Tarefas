@@ -48,13 +48,15 @@ export class UserService {
       throw new ValidationError("E-mail ou senha inválidos");
     }
 
-    // Compara a senha informada com o hash salvo no banco
     const senhaValida = await bcrypt.compare(senhaRaw, user.senha);
     if (!senhaValida) {
       throw new ValidationError("E-mail ou senha inválidos");
     }
 
-    // Gerar token JWT (expira em 8h)
+    if (!user.ativo) {
+      throw new ValidationError("Usuário inativo no sistema");
+    }
+
     const token = jwt.sign(
       { id: user.id, email: user.email },
       JWT_SECRET,
@@ -65,6 +67,14 @@ export class UserService {
       user: { id: user.id, nome: user.nome, email: user.email },
       token,
     };
+  }
+
+  async alterarStatus(id: number, ativo: boolean) {
+    const affectedRows = await userRepository.alterarStatus(id, ativo);
+    if (affectedRows === 0) {
+      throw new NotFoundError("Usuário não encontrado para alteração de status");
+    }
+    return true;
   }
 
   async atualizar(id: number, nome: string, email: string) {

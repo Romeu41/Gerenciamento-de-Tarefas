@@ -73,4 +73,24 @@ export class UsersController {
       return next(error);
     }
   }
+
+  static async inativar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await userService.alterarStatus(Number(id), false);
+      return res.json({ message: "Usuário inativado com sucesso!" });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  static async ativar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await userService.alterarStatus(Number(id), true);
+      return res.json({ message: "Usuário ativado com sucesso!" });
+    } catch (error) {
+      return next(error);
+    }
+  }
 }

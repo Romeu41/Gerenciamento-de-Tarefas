@@ -12,4 +12,7 @@ router.get("/usuarios/:termo", authMiddleware, UsersController.getByTerm);
 router.put("/usuarios/:id", authMiddleware, UsersController.update);
 router.delete("/usuarios/:id", authMiddleware, UsersController.delete);
 
+router.patch("/usuarios/:id/inativar", authMiddleware, UsersController.inativar);
+router.patch("/usuarios/:id/ativar", authMiddleware, UsersController.ativar);
+
 export default router;

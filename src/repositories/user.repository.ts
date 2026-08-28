@@ -37,6 +37,14 @@ export class UserRepository {
     return result.affectedRows;
   }
 
+  async alterarStatus(id: number, ativo: boolean): Promise<number> {
+    const [result]: any = await pool.query(
+      "UPDATE usuarios SET ativo = ? WHERE id = ?",
+      [ativo, id]
+    );
+    return result.affectedRows;
+  }
+
   async deletar(id: number): Promise<number> {
     const [result]: any = await pool.query(
       "DELETE FROM usuarios WHERE id = ?",
