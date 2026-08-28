@@ -1,11 +1,19 @@
-import express from 'express';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { routes } from "./routes/index";
+import { errorHandler } from "./middlewares/errorhandler.middleware";
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-})
+app.use(cors());
 
-app.listen(3000, () => {
-  console.log('Servidor ativo na porta 3000');
+routes(app);
+errorHandler(app);
+
+app.listen(PORT, () => {
+  console.log(`Servidor ativo na porta ${PORT}`);
 });

@@ -4,18 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon src/app/js",
+    "start": "npx tsc-watch --onSuccess \"node ./lib/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.2",
+    "sequelize": "^6.37.8"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.13",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.4.0",
+    "tsc-watch": "^7.2.1",
     "typescript": "^7.0.2"
   }
 }
