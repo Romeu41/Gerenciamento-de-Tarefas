@@ -60,13 +60,14 @@ export class TasksController {
     }
   }
 
-  static async deletar(req: Request, res: Response, next: NextFunction) {
+static async deletar(req: Request, res: Response, next: NextFunction) {
     try {
       const usuario_id = (req as any).user.id;
       const { id } = req.params;
 
-      const resultado = await taskService.deletar(Number(id), usuario_id);
-      return res.json(resultado);
+      await taskService.deletar(Number(id), usuario_id);
+      
+      return res.status(204).send();
     } catch (error) {
       return next(error);
     }

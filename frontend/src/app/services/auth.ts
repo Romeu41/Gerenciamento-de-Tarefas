@@ -5,24 +5,22 @@ import { Observable, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api'; 
+  private readonly apiUrl = 'http://localhost:3000/usuarios/login';
 
-login(credentials: { email: string; senha: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials);
-  }
+  login(credentials: { email: string; senhaRaw: string }): Observable<any> {
+    const payload = {
+      email: credentials.email,
+      senha: credentials.senhaRaw
+    };
 
-  getToken(): string | null {
-    return localStorage.getItem('jwt_token');
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  logout(): void {
-    localStorage.removeItem('jwt_token');
+    return this.http.post<{ token: string }>(this.apiUrl, payload).pipe(
+      tap((response) => {
+        if (response?.token) {
+          localStorage.setItem('jwt_token', response.token);
+        }
+      })
+    );
   }
 }
