@@ -1,5 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import { pool } from "./db";
+import { ValidationError } from "../errors/validation.error";
+import { NotFoundError } from "../errors/not-found.error";
 
 export class UsersController {
 
@@ -35,7 +37,7 @@ export class UsersController {
         const [rows]: any = await pool.query(query, params);
 
         if (rows.length === 0) {
-            return res.status(404).json({ message: "Nenhum usuário encontrado" });
+             throw new NotFoundError("Usuário não encontrado");
        }
         return res.json(isNumber ? rows[0] : rows);
     } catch (error) {
@@ -46,6 +48,11 @@ export class UsersController {
     static async criacao(req: Request, res: Response, next: NextFunction) {
      try{   
         const { nome, email } = req.body;
+
+        if (!nome || !email || !nome.trim() || !email.trim()) {
+            throw new ValidationError("Nome e email são obrigatórios");
+        }
+
         const [result] = await pool.query("INSERT INTO usuarios (nome, email) VALUES (?, ?)", [nome, email]);
 
         return res.status(201).json({message: "Usuário adicionado com sucesso!",id: (result as any).insertId})
@@ -60,11 +67,15 @@ export class UsersController {
         const { id } = req.params;
         const { nome, email } = req.body;
 
+        if (!nome || !email || !nome.trim() || !email.trim()) {
+            throw new ValidationError("Nome e email não podem ser vazios");
+        }
+
         const [result]: any = await pool.query(
           "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?",[nome, email, id]);
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: "Usuário não encontrado" });
+            throw new NotFoundError("Usuário não encontrado");
         }
 
         return res.json({
@@ -82,7 +93,7 @@ export class UsersController {
           const [result]: any = await pool.query("DELETE FROM usuarios WHERE id = ?",[id]);
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: "Usuário não encontrado" });
+            throw new NotFoundError("Usuário não encontrado");
         }
 
         return res.json({ message: "Usuário excluído com sucesso!" });
