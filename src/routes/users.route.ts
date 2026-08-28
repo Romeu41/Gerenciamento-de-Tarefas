@@ -1,11 +1,15 @@
-import express from "express";
-import { UsersController } from "../controllers/users.controllers"; 
+import { Router } from "express";
+import { UsersController } from "../controllers/users.controllers";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
-export const userRoutes = express.Router();
+const router = Router();
 
-userRoutes.get("/usuarios", UsersController.getAll);
-userRoutes.get("/usuarios/:termo", UsersController.getByTerm);
-userRoutes.post("/usuarios/", UsersController.criacao);
-userRoutes.put("/usuarios/:id", UsersController.update);
-userRoutes.delete("/usuarios/:id", UsersController.delete);
+router.post("/usuarios", UsersController.criacao);
+router.post("/usuarios/login", UsersController.login);
 
+router.get("/usuarios", authMiddleware, UsersController.getAll);
+router.get("/usuarios/:termo", authMiddleware, UsersController.getByTerm);
+router.put("/usuarios/:id", authMiddleware, UsersController.update);
+router.delete("/usuarios/:id", authMiddleware, UsersController.delete);
+
+export default router;
