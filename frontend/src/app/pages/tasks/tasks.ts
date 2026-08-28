@@ -1,13 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task';
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './tasks.html',
   styleUrl: './tasks.scss'
 })
@@ -109,5 +109,11 @@ deletarTarefa(id: number): void {
         this.carregarTarefas();
       }
     });
+  }
+
+logout(): void {
+    localStorage.removeItem('token'); 
+    localStorage.removeItem('usuario'); 
+    this.router.navigate(['/login']);
   }
 }

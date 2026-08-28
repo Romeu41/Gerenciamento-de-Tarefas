@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { userRepository } from "../repositories/user.repository";
 import { NotFoundError } from "../errors/not-found.error";
 import { ValidationError } from "../errors/validation.error";
+import { pool } from "../controllers/db";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -77,16 +78,23 @@ export class UserService {
     return true;
   }
 
-  async atualizar(id: number, nome: string, email: string) {
-    if (!nome || !email || !nome.trim() || !email.trim()) {
-      throw new ValidationError("Nome e email são obrigatórios");
+async atualizar(id: number, nome: string, email: string, senha?: string): Promise<number> {
+    let query = "UPDATE usuarios SET nome = ?, email = ?";
+    const params: any[] = [nome, email];
+
+    if (senha && senha.trim() !== "") {
+      const salt = await bcrypt.genSalt(10);
+      const senhaHash = await bcrypt.hash(senha, salt);
+      
+      query += ", senha = ?";
+      params.push(senhaHash);
     }
 
-    const affectedRows = await userRepository.atualizar(id, nome.trim(), email.trim());
+    query += " WHERE id = ?";
+    params.push(id);
 
-    if (affectedRows === 0) {
-      throw new NotFoundError("Usuário não encontrado para atualização");
-    }
+    const [result]: any = await pool.query(query, params);
+    return result.affectedRows;
   }
 
   async deletar(id: number) {

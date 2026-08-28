@@ -29,12 +29,20 @@ export class UserRepository {
     return result.insertId;
   }
 
-  async atualizar(id: number, nome: string, email: string): Promise<number> {
-    const [result]: any = await pool.query(
-      "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?",
-      [nome, email, id]
-    );
-    return result.affectedRows;
+async atualizar(id: number, nome: string, email: string, senhaHash?: string): Promise<number> {
+    if (senhaHash) {
+      const [result]: any = await pool.query(
+        "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?",
+        [nome, email, senhaHash, id]
+      );
+      return result.affectedRows;
+    } else {
+      const [result]: any = await pool.query(
+        "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?",
+        [nome, email, id]
+      );
+      return result.affectedRows;
+    }
   }
 
   async alterarStatus(id: number, ativo: boolean): Promise<number> {

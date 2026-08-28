@@ -52,9 +52,9 @@ export class UsersController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { nome, email } = req.body;
+      const { nome, email, senha } = req.body;
 
-      await userService.atualizar(Number(id), nome, email);
+      await userService.atualizar(Number(id), nome, email, senha);
 
       return res.json({ message: "Usuário atualizado com sucesso!" });
     } catch (error) {
