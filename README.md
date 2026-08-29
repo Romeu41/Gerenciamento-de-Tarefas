@@ -68,7 +68,7 @@ A aplicação utiliza **JWT (JSON Web Token)** para autenticação de rotas prot
 
 O banco de dados utilizado é o **MySQL**[cite: 2, 3, 4], contendo as tabelas de usuários, status das tarefas e as tarefas em si[cite: 2, 3, 4]. Você pode executar o script abaixo para criar o banco e as tabelas necessárias:
 
-sql
+```sql
 CREATE DATABASE IF NOT EXISTS gerenciamentodetarefas;
 USE gerenciamentodetarefas;
 
