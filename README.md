@@ -63,3 +63,49 @@ A aplicação utiliza **JWT (JSON Web Token)** para autenticação de rotas prot
 ```
 
 ```
+
+## 🗄️ Estrutura do Banco de Dados
+
+O banco de dados utilizado é o **MySQL**[cite: 2, 3, 4], contendo as tabelas de usuários, status das tarefas e as tarefas em si[cite: 2, 3, 4]. Você pode executar o script abaixo para criar o banco e as tabelas necessárias:
+
+sql
+CREATE DATABASE IF NOT EXISTS gerenciamentodetarefas;
+USE gerenciamentodetarefas;
+
+-- 1. Tabela de Usuários
+CREATE TABLE `usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `data_inclusao` datetime DEFAULT CURRENT_TIMESTAMP,
+  `senha` varchar(255) NOT NULL,
+  `ativo` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- 2. Tabela de Status das Tarefas
+CREATE TABLE `status_tarefas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `chave` varchar(50) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `chave` (`chave`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- 3. Tabela de Tarefas
+CREATE TABLE `tarefas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(255) NOT NULL,
+  `descricao` text,
+  `status_id` int NOT NULL DEFAULT '1',
+  `data_vencimento` datetime DEFAULT NULL,
+  `usuario_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `tarefas_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `status_tarefas` (`id`),
+  CONSTRAINT `tarefas_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
